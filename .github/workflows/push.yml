@@ -24,9 +24,9 @@ jobs:
           LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           GHCR_IMAGE_REPO_TAG_BASE=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG_BASE }}
           GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG }}
-          echo "{GHCR_IMAGE_REPO_TAG_BASE}={${GHCR_IMAGE_REPO_TAG_BASE}}" >> $GITHUB_ENV
-          echo "{GHCR_IMAGE_REPO_TAG}={${GHCR_IMAGE_REPO_TAG}}" >> $GITHUB_ENV
-          echo "{PROJECT_NAME}={${PROJECT_NAME}}" >> $GITHUB_ENV
+          echo "GHCR_IMAGE_REPO_TAG_BASE=${GHCR_IMAGE_REPO_TAG_BASE}" >> $GITHUB_ENV
+          echo "GHCR_IMAGE_REPO_TAG=${GHCR_IMAGE_REPO_TAG}" >> $GITHUB_ENV
+          echo "PROJECT_NAME=${PROJECT_NAME}" >> $GITHUB_ENV
       - name: GHCR Pull
         run: docker pull ghcr.io/${{ GHCR_IMAGE_REPO_TAG_BASE }} || true
       - name: Docker Build
@@ -54,9 +54,9 @@ jobs:
           LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           GHCR_IMAGE_REPO_TAG_BASE=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG_BASE }}
           GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG }}
-          echo "{GHCR_IMAGE_REPO_TAG_BASE}={${GHCR_IMAGE_REPO_TAG_BASE}}" >> $GITHUB_ENV
-          echo "{GHCR_IMAGE_REPO_TAG}={${GHCR_IMAGE_REPO_TAG}}" >> $GITHUB_ENV
-          echo "{PROJECT_NAME}={${PROJECT_NAME}}" >> $GITHUB_ENV
+          echo "GHCR_IMAGE_REPO_TAG_BASE=${GHCR_IMAGE_REPO_TAG_BASE}" >> $GITHUB_ENV
+          echo "GHCR_IMAGE_REPO_TAG=${GHCR_IMAGE_REPO_TAG}" >> $GITHUB_ENV
+          echo "PROJECT_NAME=${PROJECT_NAME}" >> $GITHUB_ENV
       - name: GHCR Pull
         run: docker pull ghcr.io/${{ GHCR_IMAGE_REPO_TAG }} || true
       - name: Docker Build
