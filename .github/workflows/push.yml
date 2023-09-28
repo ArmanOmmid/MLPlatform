@@ -9,7 +9,14 @@ jobs:
       TEMP_REPO_TAG: mlplatform-image-base
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
+      - name: Docker Encryption
+        run: |
+          curl -fsSL https://github.com/docker/docker-credential-helpers/releases/download/v0.7.2/docker-credential-secretservice-v0.7.2-amd64.tar.gz | tar xvz
+          chmod +x docker-credential-secretservice
+          mv docker-credential-secretservice /usr/local/bin/
+          mkdir -p ~/.docker
+          echo '{"credHelpers": {"ghcr.io": "secretservice"}}' > ~/.docker/config.json
       - name: Docker Login
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
       - name: Build
@@ -24,6 +31,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
-        uses: actions/checkout@v2
+        uses: actions/checkout@v4
       - name: Run Tests
         run: bash tests/example_test.sh 
