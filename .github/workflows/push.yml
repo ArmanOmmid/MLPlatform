@@ -29,17 +29,17 @@ jobs:
   build_base:
     needs: 
       - GHCR
-    if: needs.GHCR.outputs.BUILD_BASE == 'true'
     runs-on: ubuntu-latest
     env:
       BUILD_BASE: ${{ needs.GHCR.outputs.BUILD_BASE }}
       GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
     steps:
-      - name: Checkout
-        uses: actions/checkout@v4
       - name: Skipping Build Base
         if: env.BUILD_BASE != 'true'
         run: echo "BUILD_BASE == false"
+      - name: Checkout
+        if: env.BUILD_BASE == 'true'
+        uses: actions/checkout@v4
       - name: Install Encryption
         if: env.BUILD_BASE == 'true'
         run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
