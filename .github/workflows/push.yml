@@ -92,9 +92,9 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GHCR_TOKEN }}
-      defaults:
-        run:
-          working-directory: ${WORKDIR}
+    defaults:
+      run:
+        working-directory: ${WORKDIR}
     steps: # No checkout, only use whats in docker
       - name: Verify Container
         run: whoami
