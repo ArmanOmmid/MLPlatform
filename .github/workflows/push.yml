@@ -80,7 +80,7 @@ jobs:
     needs: [GHCR, build]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/${{ jobs.ghcr.outputs.GHCR_IMAGE_REPO_TAG }}
+      image: ghcr.io/${{ jobs.GHCR.outputs.GHCR_IMAGE_REPO_TAG }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GHCR_TOKEN }}
