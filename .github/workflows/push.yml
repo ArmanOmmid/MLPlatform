@@ -16,7 +16,7 @@ jobs:
       GHCR_IMAGE_REPO_TAG: ${{ steps.variables.outputs.GHCR_IMAGE_REPO_TAG }}
       PROJECT_NAME: ${{ steps.variables.outputs.PROJECT_NAME }}
     steps:
-      - name: Global Variables
+      - name: Set Global Variables
         id: variables
         run: |
           LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
@@ -35,8 +35,7 @@ jobs:
       GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.global.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
     steps:
       - name: Check Build Base Skip Condition
-        if: env.BUILD_BASE != 'true'
-        run: echo "BUILD_BASE == false"
+        run: echo "BUILD_BASE == ${{ env.BUILD_BASE }}"
       - name: Checkout
         if: env.BUILD_BASE == 'true'
         uses: actions/checkout@v4
@@ -92,8 +91,8 @@ jobs:
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GHCR_TOKEN }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
+    steps: # No checkout, only use whats in docker
+      - name: Container Signature  
+        run: source /app/.bashrc
       - name: Run Tests
         run: bash tests/example_test.sh 
