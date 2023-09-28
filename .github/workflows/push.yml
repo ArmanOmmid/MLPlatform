@@ -24,7 +24,9 @@ jobs:
           echo "GHCR_IMAGE_REPO_TAG_BASE=${GHCR_IMAGE_REPO_TAG_BASE}" >> "$GITHUB_OUTPUT"
           echo "GHCR_IMAGE_REPO_TAG=${GHCR_IMAGE_REPO_TAG}" >> "$GITHUB_OUTPUT"
           echo "PROJECT_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
-
+          echo ${{ steps.format.variables.GHCR_IMAGE_REPO_TAG_BASE }}
+          echo ${{ steps.format.variables.GHCR_IMAGE_REPO_TAG }}
+          echo ${{ steps.format.variables.PROJECT_NAME }}
   NEXT:
     needs: GHCR
     runs-on: ubuntu-latest
