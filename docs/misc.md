@@ -9,7 +9,7 @@ du -shc ./*
 git pull origin -s recursive -X theirs <branch>
 
 **Bash Capture Args**
-ARGS=${@: 1}
+ARGS=${@:1}
 
 **Docker with GPUs flags**
 --gpus all

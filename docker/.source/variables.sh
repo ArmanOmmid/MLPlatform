@@ -5,6 +5,7 @@ while [[ ! -d "${PROJECT_ROOT}/${PROJECT_ROOT_INDICATOR}" ]]; do
   PROJECT_ROOT=$(dirname "${PROJECT_ROOT}")
 done
 PROJECT_NAME=$(basename "${PROJECT_ROOT}")
+DOCKER_WORKDIR=/app/${PROJECT_NAME}
 
 USER_ID=$(id -u ${USER})
 GROUP_ID=$(id -g ${USER})
