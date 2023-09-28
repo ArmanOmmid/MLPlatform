@@ -8,7 +8,7 @@ env:
   DOCKER_DIR: docker/dev
 
 jobs:
-  GHCR:
+  global:
     runs-on: ubuntu-latest
     outputs:
       BUILD_BASE: ${{ steps.variables.outputs.BUILD_BASE }}
@@ -16,7 +16,7 @@ jobs:
       GHCR_IMAGE_REPO_TAG: ${{ steps.variables.outputs.GHCR_IMAGE_REPO_TAG }}
       PROJECT_NAME: ${{ steps.variables.outputs.PROJECT_NAME }}
     steps:
-      - name: GHCR Formatting
+      - name: Global Variables
         id: variables
         run: |
           LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
@@ -28,24 +28,24 @@ jobs:
           echo "BUILD_BASE=${{ env.BUILD_BASE }}" >> "$GITHUB_OUTPUT"
   build_base:
     needs: 
-      - GHCR
+      - global
     runs-on: ubuntu-latest
     env:
-      BUILD_BASE: ${{ needs.GHCR.outputs.BUILD_BASE }}
-      GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
+      BUILD_BASE: ${{ needs.global.outputs.BUILD_BASE }}
+      GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.global.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
     steps:
-      - name: Skipping Build Base
+      - name: Check Build Base Skip Condition
         if: env.BUILD_BASE != 'true'
         run: echo "BUILD_BASE == false"
       - name: Checkout
-        if: env.BUILD_BASE == 'true'
-        uses: actions/checkout@v4
-      - name: Install Encryption
-        if: env.BUILD_BASE == 'true'
-        run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
-      - name: Generate Encryption
-        if: env.BUILD_BASE == 'true'
-        run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
+      #   if: env.BUILD_BASE == 'true'
+      #   uses: actions/checkout@v4
+      # - name: Install Encryption
+      #   if: env.BUILD_BASE == 'true'
+      #   run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
+      # - name: Generate Encryption
+      #   if: env.BUILD_BASE == 'true'
+      #   run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
       - name: Docker Login
         if: env.BUILD_BASE == 'true'
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -60,20 +60,20 @@ jobs:
         run: docker push ghcr.io/${GHCR_IMAGE_REPO_TAG_BASE}
   build:
     needs: 
-      - GHCR
+      - global
       - build_base
     runs-on: ubuntu-latest
     env:
-      GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
-      GHCR_IMAGE_REPO_TAG: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG }}
-      PROJECT_NAME: ${{ needs.GHCR.outputs.PROJECT_NAME }}
+      GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.global.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
+      GHCR_IMAGE_REPO_TAG: ${{ needs.global.outputs.GHCR_IMAGE_REPO_TAG }}
+      PROJECT_NAME: ${{ needs.global.outputs.PROJECT_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Install Encryption
-        run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
-      - name: Generate Encryption
-        run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
+      # - name: Install Encryption
+      #   run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
+      # - name: Generate Encryption
+      #   run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
       - name: Docker Login
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: GHCR Pull
@@ -84,11 +84,11 @@ jobs:
         run: docker push ghcr.io/${GHCR_IMAGE_REPO_TAG}
   tests:
     needs:
-      - GHCR
+      - global
       - build
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG }}
+      image: ghcr.io/${{ needs.global.outputs.GHCR_IMAGE_REPO_TAG }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GHCR_TOKEN }}
