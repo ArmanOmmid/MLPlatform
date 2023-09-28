@@ -66,9 +66,13 @@ jobs:
           docker push ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG }}
   GHCR:
     runs-on: ubuntu-latest
+    outputs:
+      GHCR_IMAGE_REPO_TAG_BASE: ${{ steps.format.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
+      GHCR_IMAGE_REPO_TAG: ${{ steps.format.outputs.GHCR_IMAGE_REPO_TAG }}
+      PROJECT_NAME: ${{ steps.format.outputs.PROJECT_NAME }}
     steps:
       - name: GHCR Formatting
-        id: ghcr
+        id: format
         run: |
           LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           GHCR_IMAGE_REPO_TAG_BASE=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG_BASE }}
@@ -80,7 +84,7 @@ jobs:
     needs: [GHCR, build]
     runs-on: ubuntu-latest
     container:
-      image: ghcr.io/${{ jobs.GHCR.outputs.GHCR_IMAGE_REPO_TAG }}
+      image: ghcr.io/${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG }}
       credentials:
         username: ${{ github.actor }}
         password: ${{ secrets.GHCR_TOKEN }}
