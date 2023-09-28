@@ -6,8 +6,27 @@ env:
   IMAGE_REPO_TAG: image:latest
 
 jobs:
+  GHCR:
+    runs-on: ubuntu-latest
+    outputs:
+      GHCR_IMAGE_REPO_TAG_BASE: ${{ steps.format.variables.GHCR_IMAGE_REPO_TAG_BASE }}
+      GHCR_IMAGE_REPO_TAG: ${{ steps.format.variables.GHCR_IMAGE_REPO_TAG }}
+      PROJECT_NAME: ${{ steps.format.variables.PROJECT_NAME }}
+      BUILD_BASE: ${{ steps.format.variables.PROJECT_NAME }}
+    steps:
+      - name: GHCR Formatting
+        id: variables
+        run: |
+          LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          GHCR_IMAGE_REPO_TAG_BASE=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG_BASE }}
+          GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG }}
+          echo "GHCR_IMAGE_REPO_TAG_BASE=${GHCR_IMAGE_REPO_TAG_BASE}" >> "$GITHUB_OUTPUT"
+          echo "GHCR_IMAGE_REPO_TAG=${GHCR_IMAGE_REPO_TAG}" >> "$GITHUB_OUTPUT"
+          echo "PROJECT_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
+          echo "BUILD_BASE=${{ env.BUILD_BASE }}" >> "$GITHUB_OUTPUT"
   build_base:
-    if: false
+    needs: GHCR
+    if: ${{ needs.GHCR.outputs.BIULD_BASE }} == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -64,22 +83,6 @@ jobs:
       - name: GHCR Push
         run: |
           docker push ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG }}
-  GHCR:
-    runs-on: ubuntu-latest
-    outputs:
-      GHCR_IMAGE_REPO_TAG_BASE: ${{ steps.format.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
-      GHCR_IMAGE_REPO_TAG: ${{ steps.format.outputs.GHCR_IMAGE_REPO_TAG }}
-      PROJECT_NAME: ${{ steps.format.outputs.PROJECT_NAME }}
-    steps:
-      - name: GHCR Formatting
-        id: format
-        run: |
-          LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          GHCR_IMAGE_REPO_TAG_BASE=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG_BASE }}
-          GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG }}
-          echo "GHCR_IMAGE_REPO_TAG_BASE=${GHCR_IMAGE_REPO_TAG_BASE}" >> "$GITHUB_OUTPUT"
-          echo "GHCR_IMAGE_REPO_TAG=${GHCR_IMAGE_REPO_TAG}" >> "$GITHUB_OUTPUT"
-          echo "PROJECT_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
   tests:
     needs: [GHCR, build]
     runs-on: ubuntu-latest
