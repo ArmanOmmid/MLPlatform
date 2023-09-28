@@ -8,6 +8,7 @@ env:
   DOCKER_DIR: docker/dev
 
 jobs:
+  if: false
   global:
     runs-on: ubuntu-latest
     outputs:
