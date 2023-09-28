@@ -38,8 +38,8 @@ jobs:
         if: env.BUILD_BASE != 'true'
         run: echo "BUILD_BASE == false"
       - name: Checkout
-      #   if: env.BUILD_BASE == 'true'
-      #   uses: actions/checkout@v4
+        if: env.BUILD_BASE == 'true'
+        uses: actions/checkout@v4
       # - name: Install Encryption
       #   if: env.BUILD_BASE == 'true'
       #   run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
