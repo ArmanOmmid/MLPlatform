@@ -99,10 +99,6 @@ jobs:
         run: |
           echo ${WORKDIR}
           cd ${WORKDIR}
-          pwd
-          ls
-          echo
-          cd /
-          pwd
+          ls tests
       - name: Run Tests
         run: bash tests/example_test.sh 
