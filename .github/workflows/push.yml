@@ -65,6 +65,8 @@ jobs:
         run: |
           docker push ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG }}
   GHCR:
+    runs-on: ubuntu-latest
+    steps:
       - name: GHCR Formatting
         id: ghcr
         run: |
