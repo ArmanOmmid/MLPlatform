@@ -1,24 +1,25 @@
 name: push
 on: [push]
 env:
-  BUILD_BASE: true
+  BUILD_BASE: false
 
 jobs:
   build:
+    if: ${{ github.event.environment.BUILD_BASE == 'true' }}
     runs-on: ubuntu-latest
     env: 
       IMAGE_REPO_TAG: image-base
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: Docker Encryption
+      - name: Install Encryption Tools
         run: |
           sudo apt-get update
           sudo apt-get install -y pass
           curl -fsSL https://github.com/docker/docker-credential-helpers/releases/download/v0.8.0/docker-credential-pass-v0.8.0.linux-amd64 -o docker-credential-pass
           chmod +x docker-credential-pass
           mv docker-credential-pass /usr/local/bin/
-      - name: Initialize Pass
+      - name: Docker Password Encryption
         run: |
           echo "%echo Generating a basic OpenPGP key
           Key-Type: default
@@ -34,9 +35,9 @@ jobs:
           echo '{"credHelpers": {"ghcr.io": "pass"}}' > ~/.docker/config.json
       - name: Docker Login
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
-      - name: Build
+      - name: Docker Build
         run: bash docker/base/build.sh ${IMAGE_REPO_TAG}
-      - name: Push
+      - name: GitHub Container Registry Push
         run: |
           LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           docker tag ${IMAGE_REPO_TAG} ghcr.io/${LOWERCASE_GITHUB_REPO}/${IMAGE_REPO_TAG}:latest
