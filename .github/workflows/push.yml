@@ -1,7 +1,7 @@
 name: push
 on: [push]
 env:
-  BUILD_BASE: true
+  BUILD_BASE: false
   IMAGE_REPO_TAG_BASE: image-base:latest
   IMAGE_REPO_TAG: image:latest
 
@@ -65,46 +65,13 @@ jobs:
         run: |
           docker push ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG }}
 
-    # env: 
-    #   IMAGE_REPO_TAG: image-base
-    # steps:
-    #   - name: Checkout
-    #     uses: actions/checkout@v4
-    #   - name: Install Encryption Tools
-    #     run: |
-    #       sudo apt-get update
-    #       sudo apt-get install -y pass
-    #       curl -fsSL https://github.com/docker/docker-credential-helpers/releases/download/v0.8.0/docker-credential-pass-v0.8.0.linux-amd64 -o docker-credential-pass
-    #       chmod +x docker-credential-pass
-    #       mv docker-credential-pass /usr/local/bin/
-    #   - name: Docker Password Encryption
-    #     run: |
-    #       echo "%echo Generating a basic OpenPGP key
-    #       Key-Type: default
-    #       Subkey-Type: default
-    #       Name-Real: CI
-    #       Name-Comment: Temporary Key for CI
-    #       Name-Email: ci@localhost
-    #       Expire-Date: 0
-    #       %no-protection
-    #       %commit
-    #       %echo done" | gpg2 --batch --pinentry-mode loopback --gen-key
-    #       pass init "ci@localhost"
-    #       echo '{"credHelpers": {"ghcr.io": "pass"}}' > ~/.docker/config.json
-    #   - name: Docker Login
-    #     run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
-    #   - name: Docker Build
-    #     run: bash docker/base/build.sh ${IMAGE_REPO_TAG}
-    #   - name: GitHub Container Registry Push
-    #     run: |
-    #       LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-    #       docker tag ${IMAGE_REPO_TAG} ghcr.io/${LOWERCASE_GITHUB_REPO}/${IMAGE_REPO_TAG}:latest
-    #       docker push ghcr.io/${LOWERCASE_GITHUB_REPO}/${IMAGE_REPO_TAG}:latest
-
-  # tests:
-  #   runs-on: ubuntu-latest
-  #   steps:
-  #     - name: Checkout
-  #       uses: actions/checkout@v4
-  #     - name: Run Tests
-  #       run: bash tests/example_test.sh 
+  tests:
+    needs: build
+    runs-on: ubuntu-latest
+    container:
+      image: ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG }}
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Run Tests
+        run: bash tests/example_test.sh 
