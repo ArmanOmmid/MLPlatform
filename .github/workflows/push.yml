@@ -24,6 +24,21 @@ jobs:
           echo "GHCR_IMAGE_REPO_TAG_BASE=${GHCR_IMAGE_REPO_TAG_BASE}" >> "$GITHUB_OUTPUT"
           echo "GHCR_IMAGE_REPO_TAG=${GHCR_IMAGE_REPO_TAG}" >> "$GITHUB_OUTPUT"
           echo "PROJECT_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
+
+  NEXT:
+    needs: GHCR
+      if: always() # Runs even if build_base is skipped
+      runs-on: ubuntu-latest
+      env:
+        GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
+        GHCR_IMAGE_REPO_TAG: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG }}
+        PROJECT_NAME: ${{ needs.GHCR.outputs.PROJECT_NAME }}
+      steps:
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: test
+        run: echo ${GHCR_IMAGE_REPO_TAG_BASE} ${GHCR_IMAGE_REPO_TAG} ${PROJECT_NAME}
+
   build_base:
     needs: GHCR
     if: github.environment.env.BUILD_BASE == 'true'
@@ -55,7 +70,7 @@ jobs:
           docker push ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG_BASE }}
   build:
     needs: [GHCR, build_base]
-    if: always() # Runs even if build_base is skipped
+    if: false # always() # Runs even if build_base is skipped
     runs-on: ubuntu-latest
     env:
       GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
