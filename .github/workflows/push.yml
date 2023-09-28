@@ -81,6 +81,7 @@ jobs:
   tests:
     needs:
       - global
+      - build
     runs-on: ubuntu-latest
     env:
       WORKDIR: /app/${{ needs.global.outputs.PROJECT_NAME }}
