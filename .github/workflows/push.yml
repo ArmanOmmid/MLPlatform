@@ -7,7 +7,7 @@ env:
 
 jobs:
   build_base:
-    if: ${{ env.BUILD_BASE }} == 'true'
+    if: ${{ github.env.BUILD_BASE }} == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
