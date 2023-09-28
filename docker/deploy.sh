@@ -10,11 +10,8 @@ source ${DIR}/.source/setup.sh
 set -x # Echo every command line below before executing
 docker run --rm -it \
     --pids-limit -1 \
-    -u ${USER_ID}:${GROUP_ID} \
-    --volume ${TMP_PATH}/passwd:/etc/passwd:ro \
-    --volume ${TMP_PATH}/.bashrc:/app/.bashrc:ro \
     --name ${CONTAINER_NAME} \
     --hostname ${HOST_NAME} \
     ${GPUS} \
     ${IMAGE_REPO_TAG} \
-    /bin/bash --init-file /app/.bashrc
+    /bin/bash

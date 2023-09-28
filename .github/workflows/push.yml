@@ -92,7 +92,7 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GHCR_TOKEN }}
     steps: # No checkout, only use whats in docker
-      - name: Container Signature  
-        run: source /app/.bashrc
+      - name: Verify Container
+        run: whoami
       - name: Run Tests
         run: bash tests/example_test.sh 
