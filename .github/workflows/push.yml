@@ -47,7 +47,7 @@ jobs:
         run: |
           docker push ghcr.io/${GHCR_IMAGE_REPO_TAG_BASE}
   build:
-    needs: GHCR, build_base
+    needs: build_base
     runs-on: ubuntu-latest
     env:
       GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
