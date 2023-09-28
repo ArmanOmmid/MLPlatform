@@ -1,5 +1,6 @@
 name: push
-on: [push]
+on: 
+  - none # push
 env:
   BUILD_BASE: false
   IMAGE_REPO_TAG_BASE: image-base:latest
@@ -8,7 +9,6 @@ env:
   DOCKER_DIR: docker/dev
 
 jobs:
-  if: false
   global:
     runs-on: ubuntu-latest
     outputs:
