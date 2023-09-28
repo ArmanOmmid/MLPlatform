@@ -1,6 +1,13 @@
 name: push
-on: 
-  - merge # push
+
+on:
+  push:
+    branches:
+      - master
+  pull_request:
+    type: [open]
+    branches:
+      - master
 env:
   BUILD_BASE: false
   IMAGE_REPO_TAG_BASE: image-base:latest
