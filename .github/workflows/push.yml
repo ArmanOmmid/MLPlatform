@@ -6,7 +6,6 @@ env:
 jobs:
   build:
     runs-on: ubuntu-latest
-    if: env.BUILD_BASE == 'true'
     env: 
       IMAGE_REPO_TAG: image-base
     steps:
