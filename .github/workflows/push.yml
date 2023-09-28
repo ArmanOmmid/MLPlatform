@@ -36,7 +36,7 @@ jobs:
       - name: Generate Encryption
         run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
       - name: Docker Login
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: GHCR Repo Formatting
         id: vars
         run: |
@@ -58,6 +58,10 @@ jobs:
     if: always() # Runs even if build_base is skipped
     runs-on: ubuntu-latest
     steps:
+      - env:
+        GHCR_IMAGE_REPO_TAG_BASE: needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE
+        GHCR_IMAGE_REPO_TAG: needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG
+        PROJECT_NAME: needs.GHCR.outputs.PROJECT_NAME
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install Encryption
@@ -65,11 +69,11 @@ jobs:
       - name: Generate Encryption
         run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
       - name: Docker Login
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: GHCR Pull
-        run: docker pull ghcr.io/${{ needs.GHCR.output.GHCR_IMAGE_REPO_TAG }} || true
+        run: docker pull ghcr.io/${GHCR_IMAGE_REPO_TAG } || true
       - name: Docker Build
-        run: bash ${{ env.DOCKER_DIR }}/build.sh ghcr.io/${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }} ghcr.io/${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG }} ${{ needs.GHCR.outputs.PROJECT_NAME }} 
+        run: bash ${{ env.DOCKER_DIR }}/build.sh ghcr.io/${GHCR_IMAGE_REPO_TAG_BASE} ghcr.io/${GHCR_IMAGE_REPO_TAG} ${PROJECT_NAME}
       - name: GHCR Push
         run: |
           docker push ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG }}
