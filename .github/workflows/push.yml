@@ -85,6 +85,8 @@ jobs:
     needs:
       - global
     runs-on: ubuntu-latest
+    env:
+      WORKDIR: /app/${{ needs.global.outputs.PROJECT_NAME }}
     container:
       image: ghcr.io/${{ needs.global.outputs.GHCR_IMAGE_REPO_TAG }}
       credentials:
@@ -93,10 +95,7 @@ jobs:
     steps: # No checkout, only use whats in docker
       - name: Verify Container
         run: whoami
-      - name: List
-        run: |
-          pwd
-          cd ..
-          cd ..
+      - name: App Working Directory
+        run: cd ${WORKDIR}
       - name: Run Tests
         run: bash tests/example_test.sh 

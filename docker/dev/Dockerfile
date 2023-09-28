@@ -7,7 +7,8 @@ RUN pip3 install -r /app/requirements/cicd.txt
 
 ARG PROJECT_NAME
 COPY . /app/${PROJECT_NAME}
-WORKDIR /app/${PROJECT_NAME}
 
 RUN echo "docker:x:9999:0:docker:/home:/bin/bash" >> /etc/passwd
 USER docker
+
+WORKDIR /app/${PROJECT_NAME}
