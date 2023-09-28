@@ -3,10 +3,26 @@ name: push
 on: [push]
 
 jobs:
+  build:
+    runs-on: ubuntu-latest
+    env: 
+      IMAGE_REPO_TAG: mlp-image-base:latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v2
+      - name: Docker Login
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
+      - name: Build
+        run: bash docker/base/build.sh ${IMAGE_REPO_TAG}
+      - name: Push
+        run: |
+          docker tag ${IMAGE_REPO_TAG} ghcr.io/${{ github.repository }}/${IMAGE_REPO_TAG}
+          docker push ghcr.io/${{ github.repository }}/${IMAGE_REPO_TAG}
+
   tests:
     runs-on: ubuntu-latest
     steps:
-      - name: Checkout Code
+      - name: Checkout
         uses: actions/checkout@v2
       - name: Run Tests
         run: bash tests/example_test.sh
