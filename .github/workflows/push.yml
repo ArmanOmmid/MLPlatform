@@ -26,8 +26,9 @@ jobs:
           Name-Comment: Temporary Key for CI
           Name-Email: ci@localhost
           Expire-Date: 0
+          %no-protection
           %commit
-          %echo done" | gpg2 --batch --gen-key
+          %echo done" | gpg2 --batch --pinentry-mode loopback --gen-key
           pass init "ci@localhost"
           echo '{"credHelpers": {"ghcr.io": "pass"}}' > ~/.docker/config.json
       - name: Docker Login
