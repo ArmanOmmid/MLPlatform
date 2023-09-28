@@ -31,6 +31,7 @@ jobs:
         run: bash docker/base/build.sh ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
       - name: GHCR Push
         run: |
+          docker tag ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }} ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
           docker push ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
 
   build:
