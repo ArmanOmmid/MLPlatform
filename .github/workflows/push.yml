@@ -1,12 +1,14 @@
 name: push
-
 on: [push]
+env:
+  BUILD_BASE: true
 
 jobs:
   build:
     runs-on: ubuntu-latest
+    if: env.BUILD_BASE == 'true'
     env: 
-      TEMP_REPO_TAG: mlplatform-image-base
+      IMAGE_REPO_TAG: image-base
     steps:
       - name: Checkout
         uses: actions/checkout@v4
@@ -34,12 +36,12 @@ jobs:
       - name: Docker Login
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
       - name: Build
-        run: bash docker/base/build.sh ${TEMP_REPO_TAG}
+        run: bash docker/base/build.sh ${IMAGE_REPO_TAG}
       - name: Push
         run: |
-          LOWERCASE_IMAGE_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          docker tag ${TEMP_REPO_TAG} ghcr.io/${LOWERCASE_IMAGE_REPO}-image-base:latest
-          docker push ghcr.io/${LOWERCASE_IMAGE_REPO}-image-base:latest
+          LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
+          docker tag ${IMAGE_REPO_TAG} ghcr.io/${LOWERCASE_GITHUB_REPO}/${IMAGE_REPO_TAG}:latest
+          docker push ghcr.io/${LOWERCASE_GITHUB_REPO}/${IMAGE_REPO_TAG}:latest
 
   tests:
     runs-on: ubuntu-latest
