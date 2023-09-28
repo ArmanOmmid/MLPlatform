@@ -7,12 +7,11 @@ env:
 
 jobs:
   build_base:
+    if: ${{ env.BUILD_BASE }} == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
         uses: actions/checkout@v4
-      - name: TEST
-        run: echo $BUILD_BASE
       - name: Install Encryption
         run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
       - name: Generate Encryption
@@ -27,7 +26,7 @@ jobs:
           GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG }}
           echo "GHCR_IMAGE_REPO_TAG_BASE=${GHCR_IMAGE_REPO_TAG_BASE}" >> "$GITHUB_ENV"
           echo "GHCR_IMAGE_REPO_TAG=${GHCR_IMAGE_REPO_TAG}" >> "$GITHUB_ENV"
-          echo "PROJECT_NAME=${PROJECT_NAME}" >> "$GITHUB_ENV"
+          echo "PROJECT_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_ENV"
       - name: GHCR Pull
         run: docker pull ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG_BASE }} || true
       - name: Docker Build
@@ -57,11 +56,11 @@ jobs:
           GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG }}
           echo "GHCR_IMAGE_REPO_TAG_BASE=${GHCR_IMAGE_REPO_TAG_BASE}" >> "$GITHUB_ENV"
           echo "GHCR_IMAGE_REPO_TAG=${GHCR_IMAGE_REPO_TAG}" >> "$GITHUB_ENV"
-          echo "PROJECT_NAME=${PROJECT_NAME}" >> "$GITHUB_ENV"
+          echo "PROJECT_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_ENV"
       - name: GHCR Pull
         run: docker pull ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG }} || true
       - name: Docker Build
-        run: bash docker/base/build.sh ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG_BASE }} ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG }} ${{ env.PROJECT_NAME }} 
+        run: bash docker/dev/build.sh ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG_BASE }} ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG }} ${{ env.PROJECT_NAME }} 
       - name: GHCR Push
         run: |
           docker push ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG }}
