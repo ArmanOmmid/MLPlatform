@@ -55,7 +55,7 @@ jobs:
           docker push ghcr.io/${{ env.GHCR_IMAGE_REPO_TAG_BASE }}
   build:
     needs: [GHCR, build_base]
-    if: false # always() # Runs even if build_base is skipped
+    if: always() # Runs even if build_base is skipped
     runs-on: ubuntu-latest
     env:
       GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
