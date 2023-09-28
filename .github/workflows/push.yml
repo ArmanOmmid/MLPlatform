@@ -70,7 +70,7 @@ jobs:
         run: |
           docker push ghcr.io/${GHCR_IMAGE_REPO_TAG}
   tests:
-    needs: build
+    needs: [GHCR, build]
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG }}
