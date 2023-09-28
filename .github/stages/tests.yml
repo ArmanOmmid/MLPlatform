@@ -1,4 +1,4 @@
-name: tests
+name: Tests
 
 on:
   workflow_run:
@@ -6,9 +6,8 @@ on:
     types:
       - completed
 
-
 jobs:
-  tests:
+  test_job:
     runs-on: ubuntu-latest
     - name: Run Tests
       run: bash tests/example_test.sh
