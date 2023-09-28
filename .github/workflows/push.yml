@@ -57,30 +57,30 @@ jobs:
       - name: GHCR Push
         if: env.BUILD_BASE == 'true'
         run: docker push ghcr.io/${GHCR_IMAGE_REPO_TAG_BASE}
-  build:
-    needs: 
-      - global
-      - build_base
-    runs-on: ubuntu-latest
-    env:
-      GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.global.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
-      GHCR_IMAGE_REPO_TAG: ${{ needs.global.outputs.GHCR_IMAGE_REPO_TAG }}
-      PROJECT_NAME: ${{ needs.global.outputs.PROJECT_NAME }}
-    steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      # - name: Install Encryption
-      #   run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
-      # - name: Generate Encryption
-      #   run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
-      - name: Docker Login
-        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
-      - name: GHCR Pull
-        run: docker pull ghcr.io/${GHCR_IMAGE_REPO_TAG} || true
-      - name: Docker Build
-        run: bash ${{ env.DOCKER_DIR }}/build.sh ghcr.io/${GHCR_IMAGE_REPO_TAG_BASE} ghcr.io/${GHCR_IMAGE_REPO_TAG} ${PROJECT_NAME}
-      - name: GHCR Push
-        run: docker push ghcr.io/${GHCR_IMAGE_REPO_TAG}
+  # build:
+  #   needs: 
+  #     - global
+  #     - build_base
+  #   runs-on: ubuntu-latest
+  #   env:
+  #     GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.global.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
+  #     GHCR_IMAGE_REPO_TAG: ${{ needs.global.outputs.GHCR_IMAGE_REPO_TAG }}
+  #     PROJECT_NAME: ${{ needs.global.outputs.PROJECT_NAME }}
+  #   steps:
+  #     - name: Checkout
+  #       uses: actions/checkout@v4
+  #     # - name: Install Encryption
+  #     #   run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
+  #     # - name: Generate Encryption
+  #     #   run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
+  #     - name: Docker Login
+  #       run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
+  #     - name: GHCR Pull
+  #       run: docker pull ghcr.io/${GHCR_IMAGE_REPO_TAG} || true
+  #     - name: Docker Build
+  #       run: bash ${{ env.DOCKER_DIR }}/build.sh ghcr.io/${GHCR_IMAGE_REPO_TAG_BASE} ghcr.io/${GHCR_IMAGE_REPO_TAG} ${PROJECT_NAME}
+  #     - name: GHCR Push
+  #       run: docker push ghcr.io/${GHCR_IMAGE_REPO_TAG}
   tests:
     needs:
       - global
@@ -96,6 +96,13 @@ jobs:
       - name: Verify Container
         run: whoami
       - name: App Working Directory
-        run: cd ${WORKDIR}
+        run: |
+          echo ${WORKDIR}
+          cd ${WORKDIR}
+          pwd
+          ls
+          echo
+          cd /
+          pwd
       - name: Run Tests
         run: bash tests/example_test.sh 
