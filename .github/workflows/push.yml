@@ -7,6 +7,7 @@ env:
 
 jobs:
   build_base:
+    if: env.BUILD_BASE == 'true'
     runs-on: ubuntu-latest
     steps:
       - name: Checkout
@@ -23,16 +24,16 @@ jobs:
           LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           GHCR_IMAGE_REPO_TAG_BASE=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG_BASE }}
           GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG }}
-          echo "{GHCR_IMAGE_REPO_TAG_BASE}={${GHCR_IMAGE_REPO_TAG_BASE}}" >> $GITHUB_OUTPUT
-          echo "{GHCR_IMAGE_REPO_TAG}={${GHCR_IMAGE_REPO_TAG}}" >> $GITHUB_OUTPUT
-          echo "{PROJECT_NAME}={${PROJECT_NAME}}" >> $GITHUB_OUTPUT
+          echo "{GHCR_IMAGE_REPO_TAG_BASE}={${GHCR_IMAGE_REPO_TAG_BASE}}" >> $GITHUB_ENV
+          echo "{GHCR_IMAGE_REPO_TAG}={${GHCR_IMAGE_REPO_TAG}}" >> $GITHUB_ENV
+          echo "{PROJECT_NAME}={${PROJECT_NAME}}" >> $GITHUB_ENV
       - name: GHCR Pull
-        run: docker pull ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }} || true
+        run: docker pull ghcr.io/${{ GHCR_IMAGE_REPO_TAG_BASE }} || true
       - name: Docker Build
-        run: bash docker/base/build.sh ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
+        run: bash docker/base/build.sh ghcr.io/${{ GHCR_IMAGE_REPO_TAG_BASE }}
       - name: GHCR Push
         run: |
-          docker push ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
+          docker push ghcr.io/${{ GHCR_IMAGE_REPO_TAG_BASE }}
 
   build:
     needs: build_base
@@ -53,16 +54,16 @@ jobs:
           LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           GHCR_IMAGE_REPO_TAG_BASE=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG_BASE }}
           GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG }}
-          echo "{GHCR_IMAGE_REPO_TAG_BASE}={${GHCR_IMAGE_REPO_TAG_BASE}}" >> $GITHUB_OUTPUT
-          echo "{GHCR_IMAGE_REPO_TAG}={${GHCR_IMAGE_REPO_TAG}}" >> $GITHUB_OUTPUT
-          echo "{PROJECT_NAME}={${PROJECT_NAME}}" >> $GITHUB_OUTPUT
+          echo "{GHCR_IMAGE_REPO_TAG_BASE}={${GHCR_IMAGE_REPO_TAG_BASE}}" >> $GITHUB_ENV
+          echo "{GHCR_IMAGE_REPO_TAG}={${GHCR_IMAGE_REPO_TAG}}" >> $GITHUB_ENV
+          echo "{PROJECT_NAME}={${PROJECT_NAME}}" >> $GITHUB_ENV
       - name: GHCR Pull
-        run: docker pull ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG }} || true
+        run: docker pull ghcr.io/${{ GHCR_IMAGE_REPO_TAG }} || true
       - name: Docker Build
-        run: bash docker/base/build.sh ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }} ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG }} ${{ steps.vars.outputs.PROJECT_NAME }} 
+        run: bash docker/base/build.sh ghcr.io/${{ GHCR_IMAGE_REPO_TAG_BASE }} ghcr.io/${{ GHCR_IMAGE_REPO_TAG }} ${{ PROJECT_NAME }} 
       - name: GHCR Push
         run: |
-          docker push ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG }}
+          docker push ghcr.io/${{ GHCR_IMAGE_REPO_TAG }}
 
     # env: 
     #   IMAGE_REPO_TAG: image-base
