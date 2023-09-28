@@ -62,7 +62,6 @@ jobs:
       GHCR_IMAGE_REPO_TAG: needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG
       PROJECT_NAME: needs.GHCR.outputs.PROJECT_NAME
     steps:
-        run: "GHCR Variables"
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install Encryption
