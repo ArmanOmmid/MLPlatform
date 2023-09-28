@@ -10,8 +10,14 @@ jobs:
     if: ${{ github.event.environment.BUILD_BASE == 'true' }}
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Docker Login
-        uses: ./.github/workflows/login.yml
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Encryption
+        run: ./.github/encryption/install.sh
+      - name: Generate Encryption
+        run: ./.github/encryption/generate.sh
+      - name: Docker Login
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
       - name: GHCR Repo Formatting
         id: vars
         run: |
@@ -33,8 +39,14 @@ jobs:
     if: always() # Runs even if build_base is skipped
     runs-on: ubuntu-latest
     steps:
-      - name: Trigger Docker Login
-        uses: ./.github/workflows/login.yml
+      - name: Checkout
+        uses: actions/checkout@v4
+      - name: Install Encryption
+        run: ./.github/encryption/install.sh
+      - name: Generate Encryption
+        run: ./.github/encryption/generate.sh
+      - name: Docker Login
+        run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
       - name: GHCR Repo Formatting
         id: vars
         run: |
