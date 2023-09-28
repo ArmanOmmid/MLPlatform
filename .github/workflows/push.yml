@@ -27,17 +27,16 @@ jobs:
 
   NEXT:
     needs: GHCR
-      if: always() # Runs even if build_base is skipped
-      runs-on: ubuntu-latest
-      env:
-        GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
-        GHCR_IMAGE_REPO_TAG: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG }}
-        PROJECT_NAME: ${{ needs.GHCR.outputs.PROJECT_NAME }}
-      steps:
-      - name: Checkout
-        uses: actions/checkout@v4
-      - name: test
-        run: echo ${GHCR_IMAGE_REPO_TAG_BASE} ${GHCR_IMAGE_REPO_TAG} ${PROJECT_NAME}
+    runs-on: ubuntu-latest
+    env:
+      GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
+      GHCR_IMAGE_REPO_TAG: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG }}
+      PROJECT_NAME: ${{ needs.GHCR.outputs.PROJECT_NAME }}
+    steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: test
+      run: echo ${GHCR_IMAGE_REPO_TAG_BASE} ${GHCR_IMAGE_REPO_TAG} ${PROJECT_NAME}
 
   build_base:
     needs: GHCR
