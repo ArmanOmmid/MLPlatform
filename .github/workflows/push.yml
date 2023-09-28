@@ -26,7 +26,7 @@ jobs:
           echo "PROJECT_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
   build_base:
     needs: GHCR
-    if: github.environment.env.BUILD_BASE == 'true'
+    if: env.BUILD_BASE == 'true'
     runs-on: ubuntu-latest
     env:
       GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
