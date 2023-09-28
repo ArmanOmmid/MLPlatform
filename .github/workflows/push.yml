@@ -84,7 +84,6 @@ jobs:
   tests:
     needs:
       - global
-      - build
     runs-on: ubuntu-latest
     container:
       image: ghcr.io/${{ needs.global.outputs.GHCR_IMAGE_REPO_TAG }}
@@ -94,5 +93,7 @@ jobs:
     steps: # No checkout, only use whats in docker
       - name: Verify Container
         run: whoami
+      - name: List
+        run: ls
       - name: Run Tests
         run: bash tests/example_test.sh 
