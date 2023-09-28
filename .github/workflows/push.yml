@@ -1,4 +1,4 @@
-name: Push
+name: push
 
 on: [push]
 
@@ -8,3 +8,5 @@ jobs:
     steps:
       - name: Checkout Code
         uses: actions/checkout@v2
+      - name: Run Tests
+        run: bash tests/example_test.sh
