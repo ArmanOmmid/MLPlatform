@@ -21,8 +21,8 @@ jobs:
         id: vars
         run: |
           LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          GHCR_IMAGE_REPO_TAG_BASE=${LOWERCASE_GITHUB_REPO}/${{ github.event.environment.IMAGE_REPO_TAG_BASE }}
-          GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ github.event.environment.IMAGE_REPO_TAG }}
+          GHCR_IMAGE_REPO_TAG_BASE=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG_BASE }}
+          GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG }}
           echo "::set-output name=GHCR_IMAGE_REPO_TAG_BASE::${GHCR_IMAGE_REPO_TAG_BASE}"
           echo "::set-output name=GHCR_IMAGE_REPO_TAG::${GHCR_IMAGE_REPO_TAG}"
       - name: GHCR Pull
@@ -31,7 +31,6 @@ jobs:
         run: bash docker/base/build.sh ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
       - name: GHCR Push
         run: |
-          docker tag ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }} ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
           docker push ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
 
   build:
