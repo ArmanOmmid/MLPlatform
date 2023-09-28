@@ -14,6 +14,7 @@ jobs:
         run: |
           sudo apt-get update
           sudo apt-get install -y libsecret-1-0
+          sudo apt install gnome-keyring
           curl -fsSL https://github.com/docker/docker-credential-helpers/releases/download/v0.8.0/docker-credential-secretservice-v0.8.0.linux-amd64 -o docker-credential-secretservice
           chmod +x docker-credential-secretservice
           mv docker-credential-secretservice /usr/local/bin/
