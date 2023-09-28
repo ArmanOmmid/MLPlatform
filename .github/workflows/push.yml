@@ -58,9 +58,9 @@ jobs:
     if: always() # Runs even if build_base is skipped
     runs-on: ubuntu-latest
     env:
-      GHCR_IMAGE_REPO_TAG_BASE: needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE
-      GHCR_IMAGE_REPO_TAG: needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG
-      PROJECT_NAME: needs.GHCR.outputs.PROJECT_NAME
+      GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
+      GHCR_IMAGE_REPO_TAG: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG }}
+      PROJECT_NAME: ${{ needs.GHCR.outputs.PROJECT_NAME }}
     steps:
       - name: Checkout
         uses: actions/checkout@v4
