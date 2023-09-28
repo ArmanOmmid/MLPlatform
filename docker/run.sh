@@ -25,10 +25,10 @@ docker run --rm \
     --pids-limit -1 \
     -u ${USER_ID}:${GROUP_ID} \
     --volume ${TMP_PATH}/passwd:/etc/passwd:ro \
-    --volume ${TMP_PATH}/.bashrc:${DOCKER_WORKDIR}/.bashrc:ro \
+    --volume ${TMP_PATH}/.bashrc:/app/.bashrc:ro \
     --volume ${PROJECT_ROOT}:${DOCKER_WORKDIR} \
     --name ${CONTAINER_NAME} \
     --hostname ${HOST_NAME} \
     ${GPUS} \
     ${IMAGE_REPO_TAG} \
-    /bin/bash -c "source .bashrc && echo "COMMANDS:" && echo ""${COMMANDS}"" && echo && ${COMMANDS}"
+    /bin/bash -c "source ../.bashrc && echo "COMMANDS:" && echo ""${COMMANDS}"" && echo && ${COMMANDS}"

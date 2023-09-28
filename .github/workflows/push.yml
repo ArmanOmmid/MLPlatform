@@ -1,11 +1,7 @@
-variables:
-  IMAGE_REPO: ${CI_REGISTRY_IMAGE}/ci-image
-  JOB_TAGS: none
+name: Push Workflow
 
-include:
-  - local: ".github/stages/build.yml"
-  - local: ".gitlab/stages/tests.yml"
+on: [push]
 
-stages:
-  - build
-  - test
+jobs:
+  tests:
+    uses: ./.github/stages/tests.yml

@@ -12,9 +12,9 @@ docker run --rm -it \
     --pids-limit -1 \
     -u ${USER_ID}:${GROUP_ID} \
     --volume ${TMP_PATH}/passwd:/etc/passwd:ro \
-    --volume ${TMP_PATH}/.bashrc:${DOCKER_WORKDIR}/.bashrc:ro \
+    --volume ${TMP_PATH}/.bashrc:/app/.bashrc:ro \
     --name ${CONTAINER_NAME} \
     --hostname ${HOST_NAME} \
     ${GPUS} \
     ${IMAGE_REPO_TAG} \
-    /bin/bash --init-file ${DOCKER_WORKDIR}/.bashrc
+    /bin/bash --init-file /app/.bashrc

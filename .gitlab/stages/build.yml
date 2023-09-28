@@ -1,0 +1,20 @@
+variables:
+  BASE_IMAGE_REPO: ${CI_REGISTRY_IMAGE}/ci-image-base
+  IMAGE_REPO_TAG: ${IMAGE_REPO}:latest # ${CI_COMMIT_REF_SLUG}
+  DOCKER_DIR: docker/dev
+
+build_image:
+  stage: build
+    before_script:
+      - echo "${CI_REGISTRY_PASSWORD}" | docker login -u ${CI_REGISTRY_USER} --password-std-in ${CI_REGISTRY}
+    script:
+      - docker pull ${IMAGE_REPO_TAG}:latest || true
+      - > 
+        docker build --pull 
+        --build-arg BASE_REPO_TAG=${BASE_IMAGE_REPO}:latest
+        --build-arg PROJECT_NAME=${CI_PROJECT_NAME}
+        -f ${DOCKER_DIR}/Dockerfile
+        -t ${IMAGE_REPO_TAG} .
+      - docker push ${IMAGE_REPO_TAG}
+    tags:
+      - ${TAGS}
