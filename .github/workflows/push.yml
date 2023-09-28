@@ -71,7 +71,7 @@ jobs:
       - name: Docker Login
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: GHCR Pull
-        run: docker pull ghcr.io/${GHCR_IMAGE_REPO_TAG } || true
+        run: docker pull ghcr.io/${GHCR_IMAGE_REPO_TAG} || true
       - name: Docker Build
         run: bash ${{ env.DOCKER_DIR }}/build.sh ghcr.io/${GHCR_IMAGE_REPO_TAG_BASE} ghcr.io/${GHCR_IMAGE_REPO_TAG} ${PROJECT_NAME}
       - name: GHCR Push
