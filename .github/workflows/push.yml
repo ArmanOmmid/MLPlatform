@@ -23,8 +23,9 @@ jobs:
           LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
           GHCR_IMAGE_REPO_TAG_BASE=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG_BASE }}
           GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG }}
-          echo "::set-output name=GHCR_IMAGE_REPO_TAG_BASE::${GHCR_IMAGE_REPO_TAG_BASE}"
-          echo "::set-output name=GHCR_IMAGE_REPO_TAG::${GHCR_IMAGE_REPO_TAG}"
+          echo "{GHCR_IMAGE_REPO_TAG_BASE}={${GHCR_IMAGE_REPO_TAG_BASE}}" >> $GITHUB_OUTPUT
+          echo "{GHCR_IMAGE_REPO_TAG}={${GHCR_IMAGE_REPO_TAG}}" >> $GITHUB_OUTPUT
+          echo "{PROJECT_NAME}={${PROJECT_NAME}}" >> $GITHUB_OUTPUT
       - name: GHCR Pull
         run: docker pull ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG_BASE }} || true
       - name: Docker Build
@@ -41,21 +42,20 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install Encryption
-        run: ./.github/encryption/install.sh
+        run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
       - name: Generate Encryption
-        run: ./.github/encryption/generate.sh
+        run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
       - name: Docker Login
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
       - name: GHCR Repo Formatting
         id: vars
         run: |
           LOWERCASE_GITHUB_REPO=$(echo "${{ github.repository }}" | tr '[:upper:]' '[:lower:]')
-          GHCR_IMAGE_REPO_TAG_BASE=${LOWERCASE_GITHUB_REPO}/${{ github.event.environment.IMAGE_REPO_TAG_BASE }}
-          GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ github.event.environment.IMAGE_REPO_TAG }}
-          echo "PROJCET_NAME=${GITHUB_REPOSITORY##*/}" >> $GITHUB_ENV
-          echo "::set-output name=GHCR_IMAGE_REPO_TAG_BASE::${GHCR_IMAGE_REPO_TAG_BASE}"
-          echo "::set-output name=GHCR_IMAGE_REPO_TAG::${GHCR_IMAGE_REPO_TAG}"
-          echo "::set-output name=PROJECT_NAME::${PROJECT_NAME}"
+          GHCR_IMAGE_REPO_TAG_BASE=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG_BASE }}
+          GHCR_IMAGE_REPO_TAG=${LOWERCASE_GITHUB_REPO}/${{ env.IMAGE_REPO_TAG }}
+          echo "{GHCR_IMAGE_REPO_TAG_BASE}={${GHCR_IMAGE_REPO_TAG_BASE}}" >> $GITHUB_OUTPUT
+          echo "{GHCR_IMAGE_REPO_TAG}={${GHCR_IMAGE_REPO_TAG}}" >> $GITHUB_OUTPUT
+          echo "{PROJECT_NAME}={${PROJECT_NAME}}" >> $GITHUB_OUTPUT
       - name: GHCR Pull
         run: docker pull ghcr.io/${{ steps.vars.outputs.GHCR_IMAGE_REPO_TAG }} || true
       - name: Docker Build
