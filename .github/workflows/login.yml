@@ -1,0 +1,39 @@
+name: GHCR Docker Login
+
+on:
+  workflow_call:
+    inputs:
+      image_repo_tag:
+        required: true
+        type: string
+      build_command:
+        required: true
+        type: string
+
+jobs:
+  steps:
+    - name: Checkout
+      uses: actions/checkout@v4
+    - name: Install Encryption Tools
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y pass
+        curl -fsSL https://github.com/docker/docker-credential-helpers/releases/download/v0.8.0/docker-credential-pass-v0.8.0.linux-amd64 -o docker-credential-pass
+        chmod +x docker-credential-pass
+        mv docker-credential-pass /usr/local/bin/
+    - name: Docker Password Encryption
+      run: |
+        echo "%echo Generating a basic OpenPGP key
+        Key-Type: default
+        Subkey-Type: default
+        Name-Real: CI
+        Name-Comment: Temporary Key for CI
+        Name-Email: ci@localhost
+        Expire-Date: 0
+        %no-protection
+        %commit
+        %echo done" | gpg2 --batch --pinentry-mode loopback --gen-key
+        pass init "ci@localhost"
+        echo '{"credHelpers": {"ghcr.io": "pass"}}' > ~/.docker/config.json
+    - name: Docker Login
+      run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
