@@ -37,12 +37,11 @@ jobs:
       - name: Checkout
         if: env.BUILD_BASE == 'true'
         uses: actions/checkout@v4
-      # - name: Install Encryption
+      # - name: Encryption
       #   if: env.BUILD_BASE == 'true'
-      #   run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
-      # - name: Generate Encryption
-      #   if: env.BUILD_BASE == 'true'
-      #   run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
+      #   run: |
+      #     chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
+      #     chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
       - name: Docker Login
         if: env.BUILD_BASE == 'true'
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
@@ -67,10 +66,10 @@ jobs:
   #   steps:
   #     - name: Checkout
   #       uses: actions/checkout@v4
-  #     # - name: Install Encryption
-  #     #   run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
-  #     # - name: Generate Encryption
-  #     #   run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
+  #     # - name: Encryption
+  #     #   run: |
+  #     #     chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
+  #     #     chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
   #     - name: Docker Login
   #       run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
   #     - name: GHCR Pull
@@ -91,7 +90,8 @@ jobs:
         username: ${{ github.actor }}
         password: ${{ secrets.GHCR_TOKEN }}
     defaults:
-      run: cd ${WORKDIR}
+      run: 
+        working-directory: ${{ env.WORKDIR }}
     steps: # No checkout, only use whats in docker
       - name: Verify Container
         run: whoami
