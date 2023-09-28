@@ -13,9 +13,9 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Install Encryption
-        run: ./.github/encryption/install.sh
+        run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
       - name: Generate Encryption
-        run: ./.github/encryption/generate.sh
+        run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
       - name: Docker Login
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ secrets.GHCR_USERNAME }} --password-stdin
       - name: GHCR Repo Formatting
