@@ -38,25 +38,25 @@ jobs:
       - name: Checkout
         uses: actions/checkout@v4
       - name: Skipping Build Base
-        if: ${BUILD_BASE} != 'true'
+        if: env.BUILD_BASE != 'true'
         run: echo "BUILD_BASE == false"
       - name: Install Encryption
-        if: ${BUILD_BASE} == 'true'
+        if: env.BUILD_BASE == 'true'
         run: chmod +x ./.github/encryption/install.sh && ./.github/encryption/install.sh
       - name: Generate Encryption
-        if: ${BUILD_BASE} == 'true'
+        if: env.BUILD_BASE == 'true'
         run: chmod +x ./.github/encryption/generate.sh && ./.github/encryption/generate.sh
       - name: Docker Login
-        if: ${BUILD_BASE} == 'true'
+        if: env.BUILD_BASE == 'true'
         run: echo "${{ secrets.GHCR_TOKEN }}" | docker login ghcr.io -u ${{ github.actor }} --password-stdin
       - name: GHCR Pull
-        if: ${BUILD_BASE} == 'true'
+        if: env.BUILD_BASE == 'true'
         run: docker pull ghcr.io/${GHCR_IMAGE_REPO_TAG_BASE} || true
       - name: Docker Build
-        if: ${BUILD_BASE} == 'true'
+        if: env.BUILD_BASE == 'true'
         run: bash ${{ env.DOCKER_DIR_BASE }}/build.sh ghcr.io/${GHCR_IMAGE_REPO_TAG_BASE}
       - name: GHCR Push
-        if: ${BUILD_BASE} == 'true'
+        if: env.BUILD_BASE == 'true'
         run: docker push ghcr.io/${GHCR_IMAGE_REPO_TAG_BASE}
   build:
     needs: 
