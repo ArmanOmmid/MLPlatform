@@ -14,6 +14,7 @@ jobs:
       GHCR_IMAGE_REPO_TAG_BASE: ${{ steps.variables.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
       GHCR_IMAGE_REPO_TAG: ${{ steps.variables.outputs.GHCR_IMAGE_REPO_TAG }}
       PROJECT_NAME: ${{ steps.variables.outputs.PROJECT_NAME }}
+      BUILD_BASE: ${{ steps.variables.outputs.BUILD_BASE }}
     steps:
       - name: GHCR Formatting
         id: variables
@@ -24,9 +25,10 @@ jobs:
           echo "GHCR_IMAGE_REPO_TAG_BASE=${GHCR_IMAGE_REPO_TAG_BASE}" >> "$GITHUB_OUTPUT"
           echo "GHCR_IMAGE_REPO_TAG=${GHCR_IMAGE_REPO_TAG}" >> "$GITHUB_OUTPUT"
           echo "PROJECT_NAME=${GITHUB_REPOSITORY##*/}" >> "$GITHUB_OUTPUT"
+          echo "BUILD_BASE=${{ env.BUILD_BASE }}" >> "$GITHUB_OUTPUT"
   build_base:
     needs: GHCR
-    if: env.BUILD_BASE == 'true'
+    if: needs.GHCR.outputs.BUILD_BASE == 'true'
     runs-on: ubuntu-latest
     env:
       GHCR_IMAGE_REPO_TAG_BASE: ${{ needs.GHCR.outputs.GHCR_IMAGE_REPO_TAG_BASE }}
