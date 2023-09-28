@@ -1,6 +1,6 @@
 name: push
 on: 
-  - none # push
+  - merge # push
 env:
   BUILD_BASE: false
   IMAGE_REPO_TAG_BASE: image-base:latest
