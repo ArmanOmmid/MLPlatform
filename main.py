@@ -7,7 +7,7 @@ from argparser import build_argparser, recover_arguments
 from src.utils import get_locations, make_locations
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-SUB_PROGRAM = "main_subprocess.py"
+SUB_PROGRAM = "main_process.py"
 
 def main(args, unkown_args):
 

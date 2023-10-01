@@ -2,8 +2,7 @@
 import os
 
 from argparser import build_argparser
-
-from src.utils import set_seed, build_config, make_locations, save_config
+from src.utils import build_config, make_locations
 from src.execute import execution
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
@@ -15,9 +14,8 @@ def main(args, unkown_args):
                 configs_path=CONFIGS_PATH,
                 working_directory=args.working_directory, 
                 experiment_name=args.experiment_name)
-    make_locations(config.downloads, config.output)
-    save_config(config)
-    set_seed(config.seed)
+    make_locations(config.path.downloads, config.path.output)
+    config.save()
 
     execution(config)
 

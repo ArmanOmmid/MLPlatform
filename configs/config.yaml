@@ -4,6 +4,9 @@
 dataset: CIFAR10
 seed: 0
 
+x:
+  y: z
+
 pointer_examples:
   - example: $choice
   - example: $option
