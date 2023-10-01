@@ -9,7 +9,7 @@ fi
 source ${DIR}/.source/setup.sh
 set -x # Echo every command line below before executing
 docker run --rm -it \
-    --pids-limit -1 \
+    --pids-limit ${PID_LIMIT} \
     --name ${CONTAINER_NAME} \
     --hostname ${HOST_NAME} \
     ${GPUS} \

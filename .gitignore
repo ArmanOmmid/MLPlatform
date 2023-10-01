@@ -1,2 +1,5 @@
+*__pycache__*
+
 docker/.source/.tmp/
 salvage/
+artifacts/

@@ -10,6 +10,7 @@ DOCKER_WORKDIR=/app/${PROJECT_NAME}
 USER_ID=$(id -u ${USER})
 GROUP_ID=$(id -g ${USER})
 HOST_NAME=$(hostname)
+PID_LIMIT=10
 
 GPUS="" # Docker NVidia Support with [GPUS=--gpus all] or [GPUS=--gpus "device=0, 1"]
 BASE_REPO_TAG=mlplatform/base:latest

@@ -22,7 +22,7 @@ fi
 source ${DIR}/.source/setup.sh
 set -x # Echo every command line below before executing
 docker run --rm \
-    --pids-limit -1 \
+    --pids-limit ${PID_LIMIT} \
     -u ${USER_ID}:${GROUP_ID} \
     --volume ${TMP_PATH}/passwd:/etc/passwd:ro \
     --volume ${TMP_PATH}/.bashrc:/app/.bashrc:ro \

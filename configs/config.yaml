@@ -1,0 +1,9 @@
+# Use $ to signify pointers
+# folder_name: $filename
+ 
+dataset: CIFAR10
+seed: 0
+
+pointer_examples:
+  - example: $choice
+  - example: $option

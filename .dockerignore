@@ -1,4 +1,7 @@
 *github*
+*__pycache__*
+
 docker/
 docs/
 salvage/
+artifacts/
