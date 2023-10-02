@@ -6,10 +6,6 @@ batch_size: 64
 num_workers: 1
 seed: 0
 
-x:
-  y: z
-
-
 example: $choice
 pointer:
 - example: $option
