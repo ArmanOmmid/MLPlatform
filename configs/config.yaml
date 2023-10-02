@@ -2,11 +2,14 @@
 # folder_name: $filename
  
 dataset: CIFAR10
+batch_size: 64
+num_workers: 1
 seed: 0
 
 x:
   y: z
 
-pointer_examples:
-  - example: $choice
-  - example: $option
+
+example: $choice
+pointer:
+- example: $option

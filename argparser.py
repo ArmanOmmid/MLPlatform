@@ -3,6 +3,8 @@ import os
 import datetime
 import argparse
 
+from src.utils import InheritAction, inherit_args
+
 TIME_OFFSET = -7
 CURRENT_TIME = datetime.datetime.now() + datetime.timedelta(hours=TIME_OFFSET)
 
@@ -11,15 +13,13 @@ WORKING_DIRECTORY = os.getcwd()
 
 def build_argparser():
     parser = argparse.ArgumentParser()
-    parser.add_argument('-x', '--experiment_name', default=EXPERIMENT_NAME,
-                        help="Experiment_Name")
-    parser.add_argument('-w', '--working_directory', default=WORKING_DIRECTORY,
+    parser.add_argument("-n", "--experiment_name", default=EXPERIMENT_NAME, action=InheritAction,
+                        help="Experiment Name")
+    parser.add_argument("-w", "--working_directory", default=WORKING_DIRECTORY, action=InheritAction,
                         help="Working Directory")
+    parser.add_argument("-x", "--disable_output", action="store_true",
+                        help="Disable Output")
+    
+    # Attach inherit_args function here
+    parser.inherit_args = inherit_args
     return parser
-
-def recover_arguments(args):
-    args_list = []
-    for arg_name, arg_value in vars(args).items():
-        if arg_value is not None:
-            args_list.extend(["--" + arg_name, str(arg_value)])
-    return args_list

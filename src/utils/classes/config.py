@@ -6,26 +6,28 @@ import os
 class Config(dict):
 
     @classmethod
-    def _set_metadata(cls, configs_path: str, extension:str, filename_field: str, encounter_limit: int):
+    def _set_metadata(cls, configs_compile_path: str, extension: str, dirname_field: str, filename_field: str, encounter_limit: int):
         """
         Sets up metadata to help the Config instantiation
 
         Args:
-            configs_path (str): path to the configs folder 
+            configs_compile_path (str): path to the configs folder 
             extension (str): choice of .yaml or .yml
+            dirname_field (str): for config yaml file pointers, define the field for the dirname
             filename_field (str): for config yaml file pointers, define the field for the filename
             ecnounter_limit (int): helps perevent config pointer loops
         """
         cls._metadata = {
-            "path" : configs_path,
+            "compile_path" : configs_compile_path,
             "encounters" : {}
         }
         cls.extension = extension
+        cls.dirname_field = dirname_field
         cls.filename_field = filename_field
         cls.encounter_limit = encounter_limit
 
     @staticmethod
-    def read_yaml(yaml_path: str, prior: dict = None) -> dict:
+    def read_yaml(yaml_path: str, prior: dict=None) -> dict:
         """
         Read YAML file given a path. Prior lets you add the new yaml dict to a prior dict
         """
@@ -80,25 +82,37 @@ class Config(dict):
             raise KeyError(f"Subconfig Encounter Limit Reached ({self.encounter_limit}), Potential Cycle for {{ {key} : {value} }}")
         
         # Read the file pointed to and return the subconfig
-        subconfig = self.read_yaml(os.path.join(self._metadata["path"], key, value[1:] + self.extension), prior = {self.filename_field : value[1:]})
+        subconfig = self.read_yaml(
+            os.path.join(self._metadata["compile_path"], key, value[1:] + self.extension), 
+            prior = {self.dirname_field : key,
+                     self.filename_field : value[1:]})
         # Do any postprocessing on the metadata
         self._metadata["encounters"][(key, value)] += 1
 
         return subconfig
     
-    def save(self, save_path: str = None):
+    def __getattr__(self, field):
+        if field not in self:
+            # REMOVED FOR NOW: If its from a config pointer (check by seeing if _name exists), provide the dirname and filename too
+            pointer_id = "" # f"{self[self.dirname_field]}:{self[self.filename_field]}." if self.get(self.filename_field, False) else ""
+            print(f"Config Undefined Key Warning: '{pointer_id}{field}' - Returning None")
+            return None
+        return self.__dict__[field]
+
+    
+    def save(self, save_path: str=None):
         """
         Save Config to a save path. If save path is None, use config.path.config
         """
-        if save_path is None: save_path = self.path.config
+        if save_path: save_path = self.config_path
         with open(save_path, "w") as yaml_file:
             yaml.dump(self.primitive(), yaml_file, default_flow_style=False)
 
-    def primitive(self, element=None):
+    def primitive(self, element="__None__"):
         """
         Serialize / Primitivize the Config object
         """
-        if element is None: element = self
+        if element == "__None__": element = self
         if isinstance(element, (Config, dict)):
             serialized = {}
             for key, value in element.items():

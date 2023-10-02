@@ -1,13 +1,16 @@
 
+import torch
 from src.utils import set_seed
-from src.data.datasets import get_dataset, split_dataset
+
+from src.factories import data_factory, model_factory
 
 def execution(config):
 
     set_seed(config.seed)
 
-    train, test = get_dataset(config.dataset, config.path.downloads, download=True)
-    train, val = split_dataset(train, 0.2)
+    config.device = torch.device('cuda' if torch.cuda.is_available() else 'cpu')
 
+    train, val, test = data_factory(config)
 
+    model = model_factory(config)
     

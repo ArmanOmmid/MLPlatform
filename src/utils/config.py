@@ -1,39 +1,50 @@
 
 import os
+
+import argparse
 from src.utils.classes import Config
 from src.utils import get_locations
 
-EXTENSION = ".yaml"
-FILENAME_FIELD = "_type"
+CONFIG_EXTENSION = ".yaml"
+DIRNAME_FIELD = "_dname"
+FILENAME_FIELD = "_fname"
 ENCOUNTER_LIMIT = 1
 
-def build_config(configs_path: str, working_directory: str, experiment_name: str) -> Config:
+def build_config(configs_compile_path: str, args: argparse.Namespace) -> Config:
     """
     Builds the config object by compiling yaml configs and any other needed items
     """
 
-    # Get original yaml config
-    config = Config.read_yaml(os.path.join(configs_path, "config" + EXTENSION))
+    # Read original config
+    config = Config.read_yaml(os.path.join(configs_compile_path, "config" + CONFIG_EXTENSION))
 
     # Setup any additional config variables
-    artifact_locations = get_locations(working_directory)
-    metadata = {
+    artifact_locations = get_locations(args.working_directory)
+    downloads_path = artifact_locations["downloads"]
+    output_path = os.path.join(artifact_locations["outputs"], args.experiment_name)
+
+    config_path = os.path.join(output_path, "config" + CONFIG_EXTENSION)
+    weights_path = os.path.join(output_path, "weights")
+
+    additional_data = {
+        "enable_output": not args.disable_output,
+        "config_path" : config_path,
         "path" : {
-            "downloads" : artifact_locations["downloads"],
-            "output" : os.path.join(artifact_locations["outputs"], experiment_name),
-            "config" : os.path.join(artifact_locations["outputs"], experiment_name, "config" + EXTENSION)
+            "downloads" : downloads_path,
+            "output" : output_path,
+            "weights" : weights_path
         },
         "id" : {
-            "name" : experiment_name,
-            "workdir" : working_directory
+            "name" : args.experiment_name,
+            "workdir" : args.working_directory
         }
     }
 
     # Update the config
-    config.update(metadata)
+    config.update(additional_data)
 
     # Setup Config Metadata and Instatiate the Config object
-    Config._set_metadata(configs_path, EXTENSION, FILENAME_FIELD, ENCOUNTER_LIMIT)
+    Config._set_metadata(configs_compile_path, CONFIG_EXTENSION, DIRNAME_FIELD, FILENAME_FIELD, ENCOUNTER_LIMIT)
     config = Config(config)
 
     return config
