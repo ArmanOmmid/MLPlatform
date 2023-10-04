@@ -18,3 +18,14 @@ learning_rate: 0.0001
 weight_decay: 0.0001
 
 torchinfo: True
+
+# !! IMPORTANT INNATE VARIABLES
+# config.enable_output = whether or not outputs are enabled. This should usually be True.
+# config.path.data = dataset location
+# config.path.output = output location for this experiment 
+# config.path.weights = weights location for this experiment
+
+# !! These also exist, but you don't really need them
+# config.id.name = experiment name
+# config.id.workdir = working directory this was called from
+# config.config_path = path to the saved config
