@@ -1,16 +1,16 @@
 # Use $ to signify pointers
 # folder_name: $filename
 
+# model, dataset, and experiment are "import" keys
 model: $UNet
 dataset: CSE275_HW0
 experiment: standard_experiment
-
-seed: 0
 
 # Train, Test
 mode: train
 val: 0.2
 
+seed: 0
 epochs: 1
 batch_size: 64
 num_workers: 4
