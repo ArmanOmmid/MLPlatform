@@ -16,7 +16,7 @@ def split_dataset(dataset: Dataset, split_percent: float):
         subset_1 (torch.vision.datasets.Subset): (1.0 - split_percent) % of the data
         subset_2 (torch.vision.datasets.Subset): (split_percent) % of the data
     """
-    if not split_percent or split_percent <= 0.0: 
+    if not split_percent or not isinstance(split_percent, float) or split_percent <= 0.0: 
         return dataset, None
     total_count = len(dataset)
     count_1 = int(split_percent * (1.0 - total_count))

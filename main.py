@@ -3,7 +3,7 @@ import os
 
 from argparser import build_argparser
 from src.utils import build_config, make_locations
-from src.execute import execution
+from src import execution
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
 CONFIGS_COMPILE_PATH = os.path.join(PROJECT_ROOT, "configs")

@@ -5,7 +5,6 @@ from torch.nn import Module
 from torch.utils.data import DataLoader
 from torch.nn.modules.loss import _Loss
 from torch.optim import Optimizer
-from torch.optim.lr_scheduler import LRScheduler
 
 def run_epoch(
         config,

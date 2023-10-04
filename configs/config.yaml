@@ -2,8 +2,9 @@
 # folder_name: $filename
 
 model: $UNet
-
 dataset: CSE275_HW0
+experiment: standard_experiment
+
 seed: 0
 
 # Train, Test
