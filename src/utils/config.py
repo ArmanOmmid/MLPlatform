@@ -2,7 +2,7 @@
 import os
 
 import argparse
-from src.utils.classes import Config
+from src.utils import Config
 from src.utils import get_locations
 
 CONFIG_EXTENSION = ".yaml"
