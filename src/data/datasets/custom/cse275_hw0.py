@@ -3,7 +3,6 @@ import os
 import numpy as np
 
 import torchvision.transforms as T
-import src.transforms as CT
 
 from src.data.datasets import _Dataset
 
