@@ -20,7 +20,7 @@ def build_config(configs_compile_path: str, args: argparse.Namespace) -> Config:
 
     # Setup any additional config variables
     artifact_locations = get_locations(args.working_directory)
-    downloads_path = artifact_locations["downloads"]
+    data_path = artifact_locations["data"]
     output_path = os.path.join(artifact_locations["outputs"], args.experiment_name)
 
     config_path = os.path.join(output_path, "config" + CONFIG_EXTENSION)
@@ -30,7 +30,7 @@ def build_config(configs_compile_path: str, args: argparse.Namespace) -> Config:
         "enable_output": not args.disable_output,
         "config_path" : config_path,
         "path" : {
-            "downloads" : downloads_path,
+            "data" : data_path,
             "output" : output_path,
             "weights" : weights_path
         },

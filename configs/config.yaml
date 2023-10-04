@@ -1,10 +1,15 @@
 # Use $ to signify pointers
 # folder_name: $filename
- 
+
+model: UNet
 dataset: CIFAR10
 batch_size: 64
 num_workers: 1
 seed: 0
+
+# Train, Test
+mode: train
+val: 0.2
 
 example: $choice
 pointer:

@@ -3,11 +3,11 @@ name: push
 on:
   push:
     branches:
-      - master
+      - none # OFF
   pull_request:
     type: [open]
     branches:
-      - master
+      - none # OFF
 env:
   BUILD_BASE: false
   IMAGE_REPO_TAG_BASE: image-base:latest

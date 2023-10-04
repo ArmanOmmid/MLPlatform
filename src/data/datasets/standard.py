@@ -2,9 +2,10 @@
 import os
 import torch
 import torchvision
-from torch.utils.data import random_split
+from utils.config import Config
+from torch.utils.data import Dataset
 
-def get_dataset(dataset_name: str, data_folder_path: str, download: bool = False):
+def get_standard_dataset(config: Config, download: bool = False):
     """
 
     Available Datasets
@@ -19,24 +20,40 @@ def get_dataset(dataset_name: str, data_folder_path: str, download: bool = False
     Apply Transforms with dataset.transform = transforms
 
     """
-    train_dataset = getattr(torchvision.datasets, dataset_name)(os.path.join(data_folder_path, dataset_name, "train"), download=download, train=True)
-    test_dataset = getattr(torchvision.datasets, dataset_name)(os.path.join(data_folder_path, dataset_name, "test"), download=download, train=False)
-    return train_dataset, test_dataset
+    assert config.mode in ["train", "test"], "config.mode must be in ['train', 'test']"
 
-def split_dataset(dataset: torchvision.datasets, split_percent: float):
-    """
-    Splits the dataset
+    datapath = os.path.join(config.path.data, config.dataset, config.mode)
+    Dataset_Class = getattr(torchvision.datasets, config.dataset)
+    # dataset = Dataset_Class(datapath, download=download, train=config.mode)
+    dataset = generate_derived_class(Dataset_Class)(datapath, download=download, train=config.mode)
+    return dataset
 
-    Args:
-        dataset (torch.vision.datasets): pytorch dataset object
-        split_percent (float): percentage of dataset to split into
-    
-    Returns:
-        subset_1 (torch.vision.datasets.Subset): (1.0 - split_percent) % of the data
-        subset_2 (torch.vision.datasets.Subset): (split_percent) % of the data
+def generate_derived_class(base_class: type=Dataset):
     """
-    total_count = len(dataset)
-    count_1 = int(split_percent * (1.0 - total_count))
-    count_2 = total_count - count_1
-    subset_1, subset_2 = random_split(dataset, [count_1, count_2])
-    return subset_1, subset_2
+    Dynamic Inheritance. 
+    """
+
+    class StandardDataset(base_class):
+
+        def __init__(self, *args, **kwargs):
+            super().__init__(*args, **kwargs)
+
+            self.input_transform = None
+            self.target_transform = None
+
+        def __getitem__(self, index):
+            input, target = super().__getitem__(index)
+
+            if self.input_transform:
+                input = self.input_transform(input)
+
+            if self.target_transform:
+                target = self.target_transform(target)
+                
+            return input, target
+        
+        def set_transforms(self, input_transform=None, target_transform=None):
+            self.input_transform = input_transform
+            self.target_transform = target_transform
+
+    return StandardDataset

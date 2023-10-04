@@ -3,7 +3,7 @@ from typing import List
 import os
 
 ARTIFACT_DIRS = [
-    "downloads",
+    "data",
     "outputs"
 ]
 
