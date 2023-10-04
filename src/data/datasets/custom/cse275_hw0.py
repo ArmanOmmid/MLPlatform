@@ -1,9 +1,13 @@
 
 import os
 import numpy as np
-from torch.utils.data import Dataset
 
-class CSE275_HW0(Dataset):
+import torchvision.transforms as T
+import src.transforms as CT
+
+from src.data.datasets import _Dataset
+
+class CSE275_HW0(_Dataset):
     
     def __init__(self, config):
         super().__init__()
@@ -25,14 +29,17 @@ class CSE275_HW0(Dataset):
     def __getitem__(self, index):
         input, target = self.inputs[index], self.targets[index]
 
-        if self.input_transform:
-            input = self.input_transform(input)
+        input, target = super().transform(input, target)
 
-        if self.target_transform:
-            target = self.target_transform(target)
-            
         return input, target
     
-    def set_transforms(self, input_transform=None, target_transform=None):
-        self.input_transform = input_transform
-        self.target_transform = target_transform
+    def set_transforms(self):
+        """
+        Set the FUNDEMENTAL transforms for this dataset
+        """
+        self.input_transform = T.Compose([
+            T.ToTensor(),
+        ])
+        self.target_transform = T.Compose([
+            T.ToTensor(),
+        ])

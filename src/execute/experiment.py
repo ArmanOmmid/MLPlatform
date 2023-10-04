@@ -2,30 +2,25 @@
 import time
 import torch
 from torch.utils.data import DataLoader
+import torchvision.transforms as T 
 import torchinfo
 
 from src.factories import data_factory, model_factory
 from src.data.utils import split_dataset
 from src.execute.epoch import run_epoch
+import src.transforms as CT
+
 
 def experiment(config):
 
     dataset = data_factory(config)
+    dataset.set_transforms()
+
+    # May need class count for model. Infer from dataset
+    # May need input size for model. This can either be infered from the dataset or can also reshape into a custom resolution
 
     model = model_factory(config)
 
-    # Figure out transforms between dataset and model
-    data_transform = CustomTransform(
-        lambda x: torch.from_numpy(x),
-        lambda x: x.float() / 255,
-        lambda x: x.permute(2, 0, 1),
-    )
-    target_transform = CustomTransform(
-        lambda x: torch.from_numpy(x),
-        lambda x: x.float() / 255,
-    )
-
-    dataset.set_transforms(data_transform, target_transform)
     dataset_len = len(dataset)
     input_shape, targets_shape = dataset[0][0].shape, dataset[0][1].shape
 
@@ -90,13 +85,3 @@ def experiment(config):
         results["val"]["accuracy"] = val_accuracy_list if accuracy_metric else None
 
     return results
-
-
-class CustomTransform:
-    def __init__(self, *transforms):
-        self.transforms = transforms
-
-    def __call__(self, x):
-        for transform in self.transforms:
-            x = transform(x)
-        return x

@@ -2,7 +2,10 @@
 import os
 import torch
 import torchvision
+import torchvision.transforms as T
 from torch.utils.data import Dataset
+
+from src.data.datasets import _Dataset
 
 def get_standard_dataset(config, download: bool = False):
     """
@@ -32,28 +35,32 @@ def generate_derived_class(base_class: type=Dataset):
     Dynamic Inheritance. 
     """
 
-    class StandardDataset(base_class):
+    class StandardDataset(base_class, _Dataset):
 
         def __init__(self, *args, **kwargs):
             super().__init__(*args, **kwargs)
-
-            self.input_transform = None
-            self.target_transform = None
+            self.base_class = base_class
 
         def __getitem__(self, index):
-            input, target = super().__getitem__(index)
+            input, target = super(self.base_class).__getitem__(index)
 
-            if self.input_transform:
-                input = self.input_transform(input)
-
-            if self.target_transform:
-                target = self.target_transform(target)
+            input, target = super(_Dataset).transform(input, target)
                 
             return input, target
         
-        def set_transforms(self, input_transform=None, target_transform=None):
-            self.input_transform = input_transform
-            self.target_transform = target_transform
+        def set_transforms(self):
+            """
+            Set the FUNDEMENTAL transforms for this dataset
+            # ToTensor handles PIL and Numpy Arrays
+            # It also scales their 255 values to [0, 1]
+            # Also ensure channels dimension is the first dimension
+            """
+            self.input_transform = T.Compose([
+                T.ToTensor(),
+            ])
+            self.target_transform = T.Compose([
+                T.ToTensor(),
+            ])
 
     StandardDataset.__name__ = f"StandardDataset::{base_class.__name__}"
 

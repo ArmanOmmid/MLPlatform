@@ -53,5 +53,5 @@ class UNet(_Network):
         y1 = self.decoder_1(y1)
 
         y = self.segmentation_head(y1)
-        y = y.squeeze(1)
+
         return y
