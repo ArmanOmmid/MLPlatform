@@ -1,7 +1,10 @@
 # Use $ to signify pointers
 # folder_name: $filename
 
-model: UNet
+model:
+  class_name: UNet
+  channels: [8, 8, 8, 8]
+
 dataset: CSE275_HW0
 seed: 0
 

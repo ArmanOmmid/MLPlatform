@@ -14,6 +14,8 @@ STANDARD_DATASETS = [
 def data_factory(config):
 
     if config.dataset in STANDARD_DATASETS:
-        return standard.get_standard_dataset(config, download=True)
+        dataset = standard.get_standard_dataset(config, download=True)
     else:
-        return getattr(custom, config.dataset)(config)
+        dataset = getattr(custom, config.dataset)(config)
+
+    return dataset
