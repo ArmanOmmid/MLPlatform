@@ -37,14 +37,27 @@ def main(args, inherited_args):
         sys.stdout.write(line.decode())
 
     # Write STDERR
+    error_file_flags = [True, False] # [Open, Close]
     for line in iter(process.stderr.readline, b""):
-        if enable_output: terminal_file.write(line)
+        if enable_output:
+            
+            # One time Open error.txt
+            if error_file_flags[0]:
+                error_file = open(os.path.join(output_path, "error.txt"), "wb")
+                error_file_flags = [False, True] # Don't Open again, but Close later
+
+            error_file.write(line)
+            terminal_file.write(line)
+
         sys.stderr.write(line.decode())
 
     exit_code = process.wait()
 
-    # Close Terminal File
-    if enable_output: terminal_file.close()
+    # Close Terminal File and maybe Error File
+    if enable_output: 
+        terminal_file.close()
+        if error_file_flags[1]:
+            error_file.close()
 
     return exit_code
 
