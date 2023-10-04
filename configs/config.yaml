@@ -1,11 +1,7 @@
 # Use $ to signify pointers
 # folder_name: $filename
 
-model:
-  class_name: UNet
-  args: []
-  kwargs:
-    channels: [8, 8, 8, 8]
+model: $UNet
 
 dataset: CSE275_HW0
 seed: 0
@@ -21,7 +17,3 @@ learning_rate: 0.0001
 weight_decay: 0.0001
 
 torchinfo: True
-
-example: $choice
-pointer:
-- example: $option

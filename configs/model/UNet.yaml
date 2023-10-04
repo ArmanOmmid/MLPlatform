@@ -1,0 +1,5 @@
+
+class_name: UNet
+args: []
+kwargs:
+  channels: [8, 8, 8, 8]
