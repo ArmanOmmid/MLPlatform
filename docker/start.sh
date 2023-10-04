@@ -10,6 +10,8 @@ source ${DIR}/.source/setup.sh
 set -x # Echo every command line below before executing
 docker run --rm -it \
     --pids-limit ${PID_LIMIT} \
+    --memory=${MEMORY} \
+    --shm-size=${SHARED_MEMORY} \
     -u ${USER_ID}:${GROUP_ID} \
     --volume ${TMP_PATH}/passwd:/etc/passwd:ro \
     --volume ${TMP_PATH}/.bashrc:/app/.bashrc:ro \

@@ -10,13 +10,12 @@ class CSE275_HW0(Dataset):
 
         self.mode = config.mode
         
-        datapath = os.path.join(config.path.data, f"{config.mode}.npz")
+        datapath = os.path.join(config.path.data, type(self).__name__, f"{config.mode}.npz")
 
-        if config.mode == "train":
-            self.inputs, self.targets = np.load(datapath)
-        elif config.mode == "test":
-            self.inputs, self.targets = np.load(datapath), None # No labels in test
-    
+        print("Loading from: ", datapath)
+        npz = np.load(datapath)
+
+        self.inputs, self.targets = npz["images"], npz["edges"]
         self.input_transform = None
         self.target_transform = None
 
@@ -24,7 +23,7 @@ class CSE275_HW0(Dataset):
         return len(self.inputs)
 
     def __getitem__(self, index):
-        input, target = super().__getitem__(index)
+        input, target = self.inputs[index], self.targets[index]
 
         if self.input_transform:
             input = self.input_transform(input)

@@ -9,8 +9,9 @@ ARG PROJECT_NAME
 COPY . /app/${PROJECT_NAME}
 
 # Default user instead of root. Let it own only the application.
-RUN echo "docker:x:9999:0:docker:/home:/bin/bash" >> /etc/passwd
-RUN chown -R docker:0 /app/${PROJECT_NAME}
+RUN echo "docker:x:9999:3:docker:/home:/bin/bash" >> /etc/passwd
+RUN chown -R :3 /app /home
+RUN chmod -R g+rwx /app /home
 USER docker
 
 WORKDIR /app/${PROJECT_NAME}

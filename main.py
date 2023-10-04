@@ -1,55 +1,24 @@
 
 import os
-import sys
-from subprocess import Popen, PIPE, STDOUT
 
 from argparser import build_argparser
-from src.utils import get_locations, make_locations
+from src.utils import build_config, make_locations
+from src.execute import execution
 
 PROJECT_ROOT = os.path.dirname(os.path.abspath(__file__))
-SUB_PROGRAM = "main_program.py"
+CONFIGS_COMPILE_PATH = os.path.join(PROJECT_ROOT, "configs")
 
-def main(args, inherited_args):
+def main(args):
 
-    enable_output = not args.disable_output
-    if enable_output:
-        locations = get_locations(args.working_directory)
-        output_path = os.path.join(locations["outputs"], args.experiment_name)
-        terminal_path = os.path.join(output_path, "terminal.txt")
+    config = build_config(configs_compile_path=CONFIGS_COMPILE_PATH, args=args)
 
-    main_program = os.path.join(PROJECT_ROOT, SUB_PROGRAM)
-    command = ['python3', main_program] + inherited_args + sys.argv[1:]
+    if config.enable_output:
+        make_locations(*list(config.path.values()))
+        config.save(config.config_path)
 
-    command_string = " ".join(command) + "\n\n"
-    sys.stdout.write(command_string)
-
-    if enable_output: make_locations(output_path)
-    process = Popen(command, stdout=PIPE, stderr=PIPE)
-    
-    # Open Terminal File
-    if enable_output:
-        terminal_file = open(terminal_path, "wb")
-        terminal_file.write(command_string.encode("utf-8"))
-
-    # Write STDOUT
-    for line in iter(process.stdout.readline, b""):
-        if enable_output: terminal_file.write(line)
-        sys.stdout.write(line.decode())
-
-    # Write STDERR
-    for line in iter(process.stderr.readline, b""):
-        if enable_output: terminal_file.write(line)
-        sys.stderr.write(line.decode())
-
-    exit_code = process.wait()
-
-    # Close Terminal File
-    if enable_output: terminal_file.close()
-
-    return exit_code
+    execution(config)
 
 if __name__ == "__main__":
     parser = build_argparser()
     args = parser.parse_args()
-    inherited_args = parser.inherit_args(args, sys.argv[1:], parser)
-    main(args, inherited_args)
+    main(args)

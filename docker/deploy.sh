@@ -10,6 +10,8 @@ source ${DIR}/.source/setup.sh
 set -x # Echo every command line below before executing
 docker run --rm -it \
     --pids-limit ${PID_LIMIT} \
+    --memory=${MEMORY} \
+    --shm-size=${SHARED_MEMORY} \
     --name ${CONTAINER_NAME} \
     --hostname ${HOST_NAME} \
     ${GPUS} \

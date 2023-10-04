@@ -9,6 +9,7 @@ class Config(dict):
     def _set_metadata(cls, configs_compile_path: str, extension: str, dirname_field: str, filename_field: str, encounter_limit: int):
         """
         Sets up metadata to help the Config instantiation
+        Also has its out output mechanism
 
         Args:
             configs_compile_path (str): path to the configs folder 
@@ -124,3 +125,13 @@ class Config(dict):
         else:
             serialized = element
         return serialized
+    
+    def output(self, filename, content, mode="a"):
+        """
+        Args:
+            mode (str): "a" is append, "w" is write
+        """
+        output_path = os.path.join(self.path.output, filename)
+        if self.enable_output:
+            with open(output_path, mode) as file:
+                print(content, file=file)

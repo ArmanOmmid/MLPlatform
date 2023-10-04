@@ -2,10 +2,9 @@
 import os
 import torch
 import torchvision
-from utils.config import Config
 from torch.utils.data import Dataset
 
-def get_standard_dataset(config: Config, download: bool = False):
+def get_standard_dataset(config, download: bool = False):
     """
 
     Available Datasets
@@ -55,5 +54,7 @@ def generate_derived_class(base_class: type=Dataset):
         def set_transforms(self, input_transform=None, target_transform=None):
             self.input_transform = input_transform
             self.target_transform = target_transform
+
+    StandardDataset.__name__ = f"StandardDataset::{base_class.__name__}"
 
     return StandardDataset
